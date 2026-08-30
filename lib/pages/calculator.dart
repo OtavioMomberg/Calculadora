@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modern_calculator/services/calculation_services.dart';
 import 'package:modern_calculator/themes/app_themes.dart';
 import 'package:modern_calculator/widgets/button_grid.dart';
@@ -17,42 +18,45 @@ class _CalculatorState extends State<Calculator> {
 
   @override
   Widget build(BuildContext context) {
-    final paddingTop = MediaQuery.of(context).viewPadding;
-
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 0,
         backgroundColor: appThemes.color1,
         surfaceTintColor: Colors.transparent,
-        toolbarHeight: 0
+        systemOverlayStyle: SystemUiOverlayStyle(
+          systemStatusBarContrastEnforced: false,
+          statusBarColor: appThemes.color1,
+          statusBarIconBrightness: appThemes.isDarkTheme ? .light : .dark,
+          systemNavigationBarContrastEnforced: false,
+          systemNavigationBarColor: appThemes.color6,
+          systemNavigationBarIconBrightness: appThemes.isDarkTheme ? .light : .dark
+        ),
       ),
+      backgroundColor: appThemes.color6,
       body: SafeArea(
         top: false,
         child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(
-            top: paddingTop.top,
-            left: 10,
-            right: 10,
-            bottom: 10,
-          ),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            gradient: appThemes.isDarkTheme ? appThemes.darkGradient : appThemes.lightGradient
+            gradient: appThemes.isDarkTheme 
+              ? AppThemes.darkGradient 
+              : AppThemes.lightGradient
           ),
           child: Column(
-            spacing: 20,
+            spacing: 10,
             children: <Widget>[
               Flexible(
                 child: Display(
                   result: _calculationServices.result,
-                  setStateCallback: setStateCallback,
-                  onPressed: changeAppTheme
+                  setStateCallback: _setStateCallback,
+                  onPressed: _changeAppTheme
                 )
               ),
               Flexible(
                 flex: 2,
                 child: ButtonGrid(
                   caracters: _calculationServices.caracters,
-                  onTapButton: callCalculationService
+                  onTapButton: _callCalculationService
                 )
               )
             ]
@@ -62,15 +66,15 @@ class _CalculatorState extends State<Calculator> {
     );
   }
 
-  void callCalculationService({required int index}) {
+  void _callCalculationService({required int index}) {
     _calculationServices.buttonsFunction(index: index);
-    setStateCallback();
+    setState(() => ());
   }
 
-  Future<void> changeAppTheme() async {
+  Future<void> _changeAppTheme() async {
     await appThemes.changeTheme();
-    setStateCallback();
+    setState(() => ());
   }
 
-  void setStateCallback() => setState(() => ());
+  void _setStateCallback() => setState(() => ());
 }

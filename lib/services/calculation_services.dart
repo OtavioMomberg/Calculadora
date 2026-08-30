@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:modern_calculator/models/caracteres.dart';
 
-final signal = "—";
+const subtractionSignal = "—";
 
 class CalculationServices {
-  final List<Caracter> caracters = Caracters.buttons;
-  final List<String> operators = Caracters.operatorsList;
-  final int decimalCases = 2;
+  final caracters = Caracters.buttons;
+  final operators = Caracters.operatorsList;
+  static const decimalCases = 2;
   List<String> listaOperadores = [];
   String result = "0";
 
@@ -15,8 +15,8 @@ class CalculationServices {
   CalculationServices._();
 
   void buttonsFunction({required int index}) {
-    final String char = caracters[index].caracter;
-    List<String> number = result.split(RegExp(r'[+\-\x\/]'));
+    final char = caracters[index].caracter;
+    List<String> number = result.split(RegExp(r"[+\-\x\/]"));
     if (number.length == 1 && number[0] == "0") number[0] = "";
 
     if (char == "AC") {
@@ -32,44 +32,41 @@ class CalculationServices {
     }
 
     if (char == "NC") {
-      scientificNotation(number: number);
+      _scientificNotation(number: number);
       return;
     }
 
-    if (!validations(index: index, char: char)) { return; }
+    if (!_validations(index: index, char: char)) { return; }
 
     if (char != "=" && char != "%") { result += char; }
 
     if (result[0] == "-" && result.length == 2) { 
-      switchSignal(option: 0); 
+      _switchSignal(option: 0); 
     } else {
-      switchSignal(option: 1);
+      _switchSignal(option: 1);
     }
 
     if (char == "%") {
-      porcentage(number: number);
+      _percentage(number: number);
       return;
     }
 
     if (char == "=" && !result.contains("^")) {
-      makeCalculation(numbers: number);
+      _doCalculation(numbers: number);
       result = number.first;
-      if (result.startsWith("-")) { switchSignal(option: 0); } 
+      if (result.startsWith("-")) { _switchSignal(option: 0); } 
     } else if (result.contains("^")) {
       result = "0";
     }
   }
 
-  void scientificNotation({required List<String> number}) {
+  void _scientificNotation({required List<String> number}) {
     if (result == "0") {
       return;
     }
-    if (result.contains("^")) {
-      return;
-    }
-    if (result.endsWith(".")) {
-      return;
-    }
+    if (result.contains("^")) { return; }
+
+    if (result.endsWith(".")) { return; }
 
     for (int i = 0; i < result.length; i++) {
       if (operators.contains(result[i])) {
@@ -80,7 +77,7 @@ class CalculationServices {
     int numSize;
     List<String> values = result.split(".");
 
-    if (number[0].startsWith("—")) { number = convertToNegativeNumber(numbers: number); }
+    if (number[0].startsWith("—")) { number = _convertToNegativeNumber(numbers: number); }
     double uniqueNumber = double.parse(number[0]);
     double aux = uniqueNumber;
 
@@ -93,11 +90,11 @@ class CalculationServices {
     result = "${uniqueNumber.toString()} x 10 ^ ${aux >= 1 ? numSize : numSize-1}";
   }
 
-  bool checkCaracter({required int index, required String char}) {
+  bool _checkCaracter({required int index, required String char}) {
     return operators.contains(char) && char != "-" ? true : false;
   }
 
-  bool validations({required int index, required String char}) {
+  bool _validations({required int index, required String char}) {
     if (operators.contains(result[result.length-1]) && char == ".") {
       return false;
     }
@@ -115,7 +112,7 @@ class CalculationServices {
     }
 
     if ((operators.contains(result[result.length - 1])) &&
-        checkCaracter(index: index, char: char)) {
+        _checkCaracter(index: index, char: char)) {
       result = result.substring(0, result.length - 1);
     }
 
@@ -140,7 +137,7 @@ class CalculationServices {
     return true;
   }
 
-  void switchSignal({required int option}) {
+  void _switchSignal({required int option}) {
     switch (option) {
       case 0: {
         result = result.replaceFirst("-", "—");
@@ -164,14 +161,14 @@ class CalculationServices {
     } 
   }
 
-  void porcentage({required List<String> number}) {
+  void _percentage({required List<String> number}) {
     if (operators.contains(result[result.length - 1])) { return; }
     if (result.endsWith("—")) { return; }
     if (result.endsWith(".")) { return; }
 
     int size = result.length;
     double partialResult = 0.0;
-    number = convertToNegativeNumber(numbers: number);
+    number = _convertToNegativeNumber(numbers: number);
     for (int i = size - 1; i >= 0; i--) {
       if (result[i] == "x" || result[i] == "/") { break; }
 
@@ -188,7 +185,7 @@ class CalculationServices {
     }
   }
 
-  void makeCalculation({required List<String> numbers}) {
+  void _doCalculation({required List<String> numbers}) {
     listaOperadores.clear();
     for (int i = 0; i < result.length; i++) {
       if (operators.contains(result[i])) {
@@ -207,16 +204,16 @@ class CalculationServices {
       }
       if (verificaOrdem) {
         if (listaOperadores[index] == "x") {
-          numbers = convertToNegativeNumber(numbers: numbers);
+          numbers = _convertToNegativeNumber(numbers: numbers);
           double aux = (double.parse(numbers[index]) * double.parse(numbers[index + 1]));
-          updateLists(number: numbers, aux: aux, index: index);
+          _updateLists(number: numbers, aux: aux, index: index);
           index = 0;
           continue;
         }
         if (listaOperadores[index] == "/") {
-          numbers = convertToNegativeNumber(numbers: numbers);
+          numbers = _convertToNegativeNumber(numbers: numbers);
           double aux = (double.parse(numbers[index]) / double.parse(numbers[index + 1]));
-          updateLists(number: numbers, aux: aux, index: index);
+          _updateLists(number: numbers, aux: aux, index: index);
           index = 0;
           continue;
         }
@@ -224,21 +221,21 @@ class CalculationServices {
       } else {
         index = 0;
         if (listaOperadores[index] == "+") {
-          numbers = convertToNegativeNumber(numbers: numbers);
+          numbers = _convertToNegativeNumber(numbers: numbers);
           double aux = (double.parse(numbers[index]) + double.parse(numbers[index+1]));
-          updateLists(number: numbers, aux: aux, index: index);
+          _updateLists(number: numbers, aux: aux, index: index);
           continue;
         }
         if (listaOperadores[index] == "-") {
-          numbers = convertToNegativeNumber(numbers: numbers);
+          numbers = _convertToNegativeNumber(numbers: numbers);
           double aux = (double.parse(numbers[index]) - double.parse(numbers[index+1]));
-          updateLists(number: numbers, aux: aux, index: index);
+          _updateLists(number: numbers, aux: aux, index: index);
         }
       }
     }
   }
 
-  List<String> convertToNegativeNumber({required List<String> numbers}) {
+  List<String> _convertToNegativeNumber({required List<String> numbers}) {
     for (int i = 0; i < numbers.length; i++) {
       if (numbers.isNotEmpty && numbers[i].startsWith("—")) {
         numbers[i] = numbers[i].substring(1, numbers[i].length);
@@ -248,7 +245,7 @@ class CalculationServices {
     return numbers;
   }
 
-  void updateLists({required List<String> number, required double aux, required int index}) {
+  void _updateLists({required List<String> number, required double aux, required int index}) {
     listaOperadores.removeAt(index);
     number.removeAt(index);
     number.removeAt(index);

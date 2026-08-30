@@ -1,3 +1,3 @@
 class AppBreakpoints {
-  static final double height = 350.0;
+  static const height = 350.0;
 }

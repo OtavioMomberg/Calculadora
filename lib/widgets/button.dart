@@ -4,13 +4,13 @@ import 'package:modern_calculator/themes/app_themes.dart';
 class Button extends StatelessWidget {
   final String text;
   final bool check;
-  final void Function() onTap;
+  final void Function()? onTap;
   final AppThemes appThemes = AppThemes.instance();
 
   Button({
     required this.text,
     required this.check,
-    required this.onTap,
+    this.onTap,
     super.key
   });
 
@@ -19,18 +19,19 @@ class Button extends StatelessWidget {
     return Material(
       borderRadius: BorderRadius.circular(50),
       color: appThemes.color2,
-      shadowColor: appThemes.color2.withValues(alpha: 0.8),
-      elevation: 10,
+      shadowColor: appThemes.color1,
+      elevation: 5,
       child: InkWell(
         borderRadius: BorderRadius.circular(50),
         splashColor: appThemes.color5,
         highlightColor: appThemes.color5,
-        onTap: onTap,
-        child: SizedBox(
-          height: 100,
-          width: 100,
+        onTap: () {
+          if (onTap == null) { return; }
+          onTap!();
+        },
+        child: SizedBox.square(
+          dimension: 100,
           child: Card(
-            elevation: 1,
             color: appThemes.color2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50),

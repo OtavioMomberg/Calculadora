@@ -22,15 +22,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Calculadora',
+      title: "Calculadora",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Electrolize',
+        fontFamily: "Electrolize",
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 26, 33, 36),
         ),
       ),
-      home: const Calculator(),
+      home: const Calculator()
     );
   }
 }

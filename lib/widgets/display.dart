@@ -7,8 +7,6 @@ class Display extends StatelessWidget {
   final String result;
   final VoidCallback setStateCallback;
   final VoidCallback onPressed;
-  final AppThemes appThemes = AppThemes.instance();
-  final CalculationServices calculationServices = CalculationServices.instance();
 
   Display({
     required this.result, 
@@ -16,6 +14,9 @@ class Display extends StatelessWidget {
     required this.onPressed,
     super.key
   });
+
+  final AppThemes appThemes = AppThemes.instance();
+  final CalculationServices calculationServices = CalculationServices.instance();
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +26,11 @@ class Display extends StatelessWidget {
           width: double.infinity,
           child: Card(
             color: appThemes.color2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(
-                width: 1,
-                color: appThemes.color1,
-              )
-            ),
+            shadowColor: appThemes.color2,
             elevation: 10,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
             child: Column(
               mainAxisAlignment: .start,
               crossAxisAlignment: .end,

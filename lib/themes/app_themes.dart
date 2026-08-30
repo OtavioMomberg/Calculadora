@@ -12,15 +12,15 @@ class AppThemes {
   Future<void> loadTheme() async {
     prefs = await SharedPreferencesWithCache.create(
       cacheOptions: const SharedPreferencesWithCacheOptions(
-        allowList: <String>{'isDarkTheme'}
+        allowList: <String>{"isDarkTheme"}
       )
     );
-    isDarkTheme = prefs.getBool('isDarkTheme') ?? true;
+    isDarkTheme = prefs.getBool("isDarkTheme") ?? true;
   }
 
   Future<void> changeTheme() async {
     isDarkTheme = !isDarkTheme;
-    await prefs.setBool('isDarkTheme', isDarkTheme);
+    await prefs.setBool("isDarkTheme", isDarkTheme);
   }
 
   Color get color1 => isDarkTheme 
@@ -43,21 +43,27 @@ class AppThemes {
     ? const Color.fromARGB(255, 47, 67, 75) 
     : const Color.fromARGB(255, 107, 127, 136);
 
-  final darkGradient = LinearGradient(
+  Color get color6 => isDarkTheme 
+    ? const Color.fromARGB(255, 22, 31, 35) 
+    : const Color.fromARGB(255, 122, 152, 164);
+
+  static const darkGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: const [
+    colors: [
       Color.fromARGB(255, 26, 33, 36),
       Color.fromARGB(255, 22, 31, 35)
     ]
   ); 
 
-  final lightGradient = LinearGradient(
+  static const lightGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: const [
+    colors: [
       Color.fromARGB(255, 173, 205, 219),
       Color.fromARGB(255, 122, 152, 164)
     ]
-  );
+  ); 
+
+
 }

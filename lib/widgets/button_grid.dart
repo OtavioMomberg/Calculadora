@@ -34,13 +34,11 @@ class ButtonGrid extends StatelessWidget {
                 data: index,
                 feedback: Button(
                   text: caracter,
-                  check: isNumber,
-                  onTap: () => ()
+                  check: isNumber
                 ),
                 childWhenDragging: Button(
                   text: "",
-                  check: false,
-                  onTap: func
+                  check: false
                 ),
                 child: Button(
                   text: caracter,
@@ -55,5 +53,3 @@ class ButtonGrid extends StatelessWidget {
     );
   }
 }
-
-void func(){}
