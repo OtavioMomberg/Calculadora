@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:modern_calculator/themes/app_themes.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:modern_calculator/core/themes/app_themes.dart';
 
 class Button extends StatelessWidget {
   final String text;
@@ -7,7 +7,7 @@ class Button extends StatelessWidget {
   final void Function()? onTap;
   final AppThemes appThemes = AppThemes.instance();
 
-  Button({
+  new({
     required this.text,
     required this.check,
     this.onTap,

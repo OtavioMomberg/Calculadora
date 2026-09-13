@@ -1,15 +1,10 @@
-class Caracter {
-  final String caracter;
-  final bool isNumber;
-
-  const Caracter({
-    required this.caracter, 
-    required this.isNumber
-  });
-}
+class Caracter({
+  required final String caracter, 
+  required final bool isNumber
+});
 
 class Caracters {
-  static const buttons = [
+  static final buttons = [
     Caracter(caracter: "AC", isNumber: false),
     Caracter(caracter: "⌫", isNumber: false),
     Caracter(caracter: "%", isNumber: false),

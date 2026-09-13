@@ -3,16 +3,16 @@ import 'package:modern_calculator/models/caracteres.dart';
 
 const subtractionSignal = "—";
 
-class CalculationServices {
+class CalculationService {
+  static const decimalCases = 2;
   final caracters = Caracters.buttons;
   final operators = Caracters.operatorsList;
-  static const decimalCases = 2;
-  List<String> listaOperadores = [];
   String result = "0";
-
-  static final _instance = CalculationServices._();
-  factory CalculationServices.instance() => _instance;
-  CalculationServices._();
+  List<String> listaOperadores = [];
+  
+  static final _instance = CalculationService._();
+  factory CalculationService.instance() => _instance;
+  new _();
 
   void buttonsFunction({required int index}) {
     final char = caracters[index].caracter;
@@ -36,12 +36,16 @@ class CalculationServices {
       return;
     }
 
-    if (!_validations(index: index, char: char)) { return; }
+    if (!_validations(index: index, char: char)) {
+      return;
+    }
 
-    if (char != "=" && char != "%") { result += char; }
+    if (char != "=" && char != "%") {
+      result += char;
+    }
 
-    if (result[0] == "-" && result.length == 2) { 
-      _switchSignal(option: 0); 
+    if (result[0] == "-" && result.length == 2) {
+      _switchSignal(option: 0);
     } else {
       _switchSignal(option: 1);
     }
@@ -54,40 +58,43 @@ class CalculationServices {
     if (char == "=" && !result.contains("^")) {
       _doCalculation(numbers: number);
       result = number.first;
-      if (result.startsWith("-")) { _switchSignal(option: 0); } 
+      if (result.startsWith("-")) {
+        _switchSignal(option: 0);
+      }
     } else if (result.contains("^")) {
-      result = "0";
+      final possibleResult = result[result.length-1];
+      result =  (possibleResult == " " || possibleResult == "^") 
+        ? "0" 
+        : possibleResult;
     }
   }
 
   void _scientificNotation({required List<String> number}) {
-    if (result == "0") {
-      return;
-    }
+    if (result == "0") { return; }
     if (result.contains("^")) { return; }
-
-    if (result.endsWith(".")) { return; }
+    if (result.endsWith(".")) {  return; }
 
     for (int i = 0; i < result.length; i++) {
-      if (operators.contains(result[i])) {
-        return;
-      }
+      if (operators.contains(result[i])) { return; }
     }
 
     int numSize;
     List<String> values = result.split(".");
 
-    if (number[0].startsWith("—")) { number = _convertToNegativeNumber(numbers: number); }
+    if (number[0].startsWith("—")) {
+      number = _convertToNegativeNumber(numbers: number);
+    }
     double uniqueNumber = double.parse(number[0]);
     double aux = uniqueNumber;
 
     values.isNotEmpty
-      ? numSize = values[0].length-1
-      : numSize = result.length-1;
+        ? numSize = values[0].length - 1
+        : numSize = result.length - 1;
 
-    uniqueNumber /= pow(10, uniqueNumber >= 1 ? numSize : numSize-1);
+    uniqueNumber /= pow(10, uniqueNumber >= 1 ? numSize : numSize - 1);
 
-    result = "${uniqueNumber.toString()} x 10 ^ ${aux >= 1 ? numSize : numSize-1}";
+    result =
+        "${uniqueNumber.toString()} x 10 ^ ${aux >= 1 ? numSize : numSize - 1}";
   }
 
   bool _checkCaracter({required int index, required String char}) {
@@ -95,7 +102,7 @@ class CalculationServices {
   }
 
   bool _validations({required int index, required String char}) {
-    if (operators.contains(result[result.length-1]) && char == ".") {
+    if (operators.contains(result[result.length - 1]) && char == ".") {
       return false;
     }
     if (result.endsWith("/") && char == "0") {
@@ -139,41 +146,54 @@ class CalculationServices {
 
   void _switchSignal({required int option}) {
     switch (option) {
-      case 0: {
-        result = result.replaceFirst("-", "—");
-        break;
-      }
-      case 1: {
-        for (int i = 0; i < result.length - 1; i++) {
-          if (operators.contains(result[i]) && result[i + 1] == "-") {
-            if (result[i] == "-") {
-              String aux = result.substring(i + 1, result.length);
-              aux = aux.replaceFirst("-", "—");
-              result = result.substring(0, i + 1) + aux;
-              break;
-            } else {
-              result = result.replaceFirst("-", "—");
+      case 0:
+        {
+          result = result.replaceFirst("-", "—");
+          break;
+        }
+      case 1:
+        {
+          for (int i = 0; i < result.length - 1; i++) {
+            if (operators.contains(result[i]) && result[i + 1] == "-") {
+              if (result[i] == "-") {
+                String aux = result.substring(i + 1, result.length);
+                aux = aux.replaceFirst("-", "—");
+                result = result.substring(0, i + 1) + aux;
+                break;
+              } else {
+                result = result.replaceFirst("-", "—");
+              }
             }
           }
+          break;
         }
-        break;
-      }
-    } 
+    }
   }
 
   void _percentage({required List<String> number}) {
-    if (operators.contains(result[result.length - 1])) { return; }
-    if (result.endsWith("—")) { return; }
-    if (result.endsWith(".")) { return; }
+    if (operators.contains(result[result.length - 1])) {
+      return;
+    }
+    if (result.endsWith("—")) {
+      return;
+    }
+    if (result.endsWith(".")) {
+      return;
+    }
 
     int size = result.length;
     double partialResult = 0.0;
     number = _convertToNegativeNumber(numbers: number);
     for (int i = size - 1; i >= 0; i--) {
-      if (result[i] == "x" || result[i] == "/") { break; }
+      if (result[i] == "x" || result[i] == "/") {
+        break;
+      }
 
       if (operators.contains(result[i])) {
-        partialResult = double.parse(number[0]) / 100.0 * double.parse(number[number.length - 1]);
+        partialResult =
+            double.parse(number[0]) /
+            100.0 *
+            double.parse(number[number.length - 1]);
         break;
       }
       result = result.substring(0, i);
@@ -205,14 +225,16 @@ class CalculationServices {
       if (verificaOrdem) {
         if (listaOperadores[index] == "x") {
           numbers = _convertToNegativeNumber(numbers: numbers);
-          double aux = (double.parse(numbers[index]) * double.parse(numbers[index + 1]));
+          double aux =
+              (double.parse(numbers[index]) * double.parse(numbers[index + 1]));
           _updateLists(number: numbers, aux: aux, index: index);
           index = 0;
           continue;
         }
         if (listaOperadores[index] == "/") {
           numbers = _convertToNegativeNumber(numbers: numbers);
-          double aux = (double.parse(numbers[index]) / double.parse(numbers[index + 1]));
+          double aux =
+              (double.parse(numbers[index]) / double.parse(numbers[index + 1]));
           _updateLists(number: numbers, aux: aux, index: index);
           index = 0;
           continue;
@@ -222,13 +244,15 @@ class CalculationServices {
         index = 0;
         if (listaOperadores[index] == "+") {
           numbers = _convertToNegativeNumber(numbers: numbers);
-          double aux = (double.parse(numbers[index]) + double.parse(numbers[index+1]));
+          double aux =
+              (double.parse(numbers[index]) + double.parse(numbers[index + 1]));
           _updateLists(number: numbers, aux: aux, index: index);
           continue;
         }
         if (listaOperadores[index] == "-") {
           numbers = _convertToNegativeNumber(numbers: numbers);
-          double aux = (double.parse(numbers[index]) - double.parse(numbers[index+1]));
+          double aux =
+              (double.parse(numbers[index]) - double.parse(numbers[index + 1]));
           _updateLists(number: numbers, aux: aux, index: index);
         }
       }
@@ -245,7 +269,11 @@ class CalculationServices {
     return numbers;
   }
 
-  void _updateLists({required List<String> number, required double aux, required int index}) {
+  void _updateLists({
+    required List<String> number,
+    required double aux,
+    required int index,
+  }) {
     listaOperadores.removeAt(index);
     number.removeAt(index);
     number.removeAt(index);

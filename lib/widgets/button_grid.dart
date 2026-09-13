@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:modern_calculator/breakpoints/app_breakpoints.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:modern_calculator/core/breakpoints/app_breakpoints.dart';
 import 'package:modern_calculator/models/caracteres.dart';
 import 'package:modern_calculator/widgets/button.dart';
 
@@ -7,7 +7,7 @@ class ButtonGrid extends StatelessWidget {
   final void Function({required int index}) onTapButton;
   final List<Caracter> caracters;
 
-  const ButtonGrid({
+  const new({
     required this.onTapButton,
     required this.caracters,
     super.key

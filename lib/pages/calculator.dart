@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:modern_calculator/services/calculation_services.dart';
-import 'package:modern_calculator/themes/app_themes.dart';
+import 'package:modern_calculator/services/calculation_service.dart';
+import 'package:modern_calculator/core/themes/app_themes.dart';
 import 'package:modern_calculator/widgets/button_grid.dart';
 import 'package:modern_calculator/widgets/display.dart';
 
 class Calculator extends StatefulWidget {
-  const Calculator({super.key});
+  const new({super.key});
 
   @override
   State<Calculator> createState() => _CalculatorState();
@@ -14,7 +14,7 @@ class Calculator extends StatefulWidget {
 
 class _CalculatorState extends State<Calculator> {
   final AppThemes appThemes = AppThemes.instance();
-  final CalculationServices _calculationServices = CalculationServices.instance();
+  final CalculationService calculationServices = CalculationService.instance();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,9 @@ class _CalculatorState extends State<Calculator> {
           statusBarIconBrightness: appThemes.isDarkTheme ? .light : .dark,
           systemNavigationBarContrastEnforced: false,
           systemNavigationBarColor: appThemes.color6,
-          systemNavigationBarIconBrightness: appThemes.isDarkTheme ? .light : .dark
+          systemNavigationBarIconBrightness: appThemes.isDarkTheme
+              ? .light
+              : .dark,
         ),
       ),
       backgroundColor: appThemes.color6,
@@ -38,36 +40,38 @@ class _CalculatorState extends State<Calculator> {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            gradient: appThemes.isDarkTheme 
-              ? AppThemes.darkGradient 
-              : AppThemes.lightGradient
+            gradient: appThemes.isDarkTheme
+              ? AppThemes.darkGradient
+              : AppThemes.lightGradient,
           ),
           child: Column(
             spacing: 10,
             children: <Widget>[
               Flexible(
                 child: Display(
-                  result: _calculationServices.result,
+                  result: calculationServices.result,
                   setStateCallback: _setStateCallback,
-                  onPressed: _changeAppTheme
-                )
+                  onPressed: _changeAppTheme,
+                  appThemes: appThemes,
+                  calculationServices: calculationServices,
+                ),
               ),
               Flexible(
                 flex: 2,
                 child: ButtonGrid(
-                  caracters: _calculationServices.caracters,
-                  onTapButton: _callCalculationService
-                )
-              )
-            ]
-          )
-        )
-      )
+                  caracters: calculationServices.caracters,
+                  onTapButton: _callCalculationService,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   void _callCalculationService({required int index}) {
-    _calculationServices.buttonsFunction(index: index);
+    calculationServices.buttonsFunction(index: index);
     setState(() => ());
   }
 

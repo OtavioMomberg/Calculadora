@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:modern_calculator/themes/app_themes.dart';
+import 'package:modern_calculator/core/themes/app_themes.dart';
 import 'pages/calculator.dart';
 
 void main() async {
